@@ -1,7 +1,6 @@
 package com.pulga.searchautocomplete.trie;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class Trie {
     private final TrieNode root;
@@ -38,16 +37,6 @@ public class Trie {
         return node;
     }
 
-    public boolean search(String word){
-        TrieNode node = searchPrefix(word);
-        return node != null && node.isEnd();
-    }
-
-    public boolean startsWith(String prefix){
-        TrieNode node = searchPrefix(prefix);
-        return node != null;
-    }
-
     public int count(String word){
         TrieNode node = searchPrefix(word);
         if(node != null){
@@ -59,17 +48,28 @@ public class Trie {
     public Queue<String> getWords(String prefix) {
         TrieNode trieNode = searchPrefix(prefix);
         if (trieNode != null) {
-            Queue<String> heap = new PriorityQueue<>(Comparator.comparingInt(this::count).reversed());
-            List<String> words = new ArrayList<>();
-            addAllWords(trieNode, prefix, heap);
-            return heap;
+            Queue<String> words = new PriorityQueue<>(Comparator.comparingInt(this::count));
+            addAllWords(trieNode, prefix, words);
+            return words;
         }
         return null;
     }
 
     private void addAllWords(TrieNode node, String word, Queue<String> words){
         if (node.isEnd()) {
-            words.add(word);
+            if(words.size() < 5){
+                words.add(word);
+            }else{
+                if(!words.contains(word)){
+                    TrieNode tempNode = searchPrefix(words.peek());
+                    if(tempNode.getCount() < node.getCount()){
+                        words.poll();
+                        words.add(word);
+                    }
+                }else{
+                    words.add(words.poll());
+                }
+            }
         }
         for(int index = 0;index < 26;index++){
             TrieNode next = node.get((char)(index + 'a'));
@@ -78,38 +78,4 @@ public class Trie {
             }
         }
     }
-
-//    public List<String> getWords(String prefix) {
-//        TrieNode trieNode = searchPrefix(prefix);
-//        if (trieNode != null) {
-//            Queue<TrieNode> heap = new PriorityQueue<>((node1, node2) -> Integer.compare(node2.getCount(), node1.getCount()));
-//            addAllWords(trieNode, prefix, heap);
-//            return heap.stream().map(this::getString).collect(Collectors.toList());
-//        }
-//        return null;
-//    }
-//
-//    private void addAllWords(TrieNode node, String word, Queue<TrieNode> words) {
-//        if (node.isEnd()) {
-//            words.add(node);
-//        }
-//
-//        for(int index = 0; index < 26; index++){
-//            TrieNode next = node.get((char)(index + 'a'));
-//            if (next != null) {
-//                addAllWords(next, word + (char)(index + 'a'), words);
-//            }
-//        }
-//    }
-//
-//    public String getString(TrieNode node){
-//        StringBuilder stringBuilder = new StringBuilder();
-//        for(int index = 0; index < 26; index++){
-//            TrieNode next = node.get((char) (index + 'a'));
-//            if (next != null) {
-//                stringBuilder.append((char)(index + 'a'));
-//            }
-//        }
-//        return stringBuilder.toString();
-//    }
 }
