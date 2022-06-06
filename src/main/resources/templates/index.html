@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+  <form action="#" th:action="@{/insert}" th:object="${insertDTO}" method="post">
+      <p>Id: <label for="word"></label><input type="text" th:field="*{word}" name="word" id="word"/></p>
+      <p><input type="submit" value="Submit" /> <input type="reset" value="Reset" /></p>
+  </form>
+<script>
+    console.log("script loaded");
+    const word = document.getElementById("word");
+    word.addEventListener("keyup", searchPrefix);
+
+    function searchPrefix() {
+        let prefix = word.value
+        if(prefix && !/^\s*$/.test(prefix)){//if prefix string exists and it's not blank
+            prefix = prefix.trim();
+            console.log(prefix)
+        }
+    }
+</script>
+</body>
+</html>

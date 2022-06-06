@@ -1,7 +1,10 @@
 package com.pulga.searchautocomplete.trie;
 
+import org.springframework.stereotype.Service;
+
 import java.util.*;
 
+@Service
 public class Trie {
     private final TrieNode root;
 
