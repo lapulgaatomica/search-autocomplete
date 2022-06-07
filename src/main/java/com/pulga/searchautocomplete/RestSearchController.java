@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.PriorityQueue;
 import java.util.Queue;
 
 @RestController
@@ -21,6 +22,7 @@ public class RestSearchController {
 
     @GetMapping
     public ResponseEntity<Queue<String>> search(@RequestParam("prefix") String prefix){
-        return ResponseEntity.ok().body(trie.getWords(prefix));
+        Queue<String> relatedWords = trie.getWords(prefix).orElse(new PriorityQueue<>());
+        return ResponseEntity.ok().body(relatedWords);
     }
 }

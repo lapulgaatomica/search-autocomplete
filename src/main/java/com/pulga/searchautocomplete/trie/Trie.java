@@ -48,14 +48,14 @@ public class Trie {
         return 0;
     }
 
-    public Queue<String> getWords(String prefix) {
+    public Optional<Queue<String>> getWords(String prefix) {
         TrieNode trieNode = searchPrefix(prefix);
         if (trieNode != null) {
             Queue<String> words = new PriorityQueue<>(Comparator.comparingInt(this::count));
             addAllWords(trieNode, prefix, words);
-            return words;
+            return Optional.of(words);
         }
-        return null;
+        return Optional.empty();
     }
 
     private void addAllWords(TrieNode node, String word, Queue<String> words){
@@ -65,7 +65,7 @@ public class Trie {
             }else{
                 if(!words.contains(word)){
                     TrieNode tempNode = searchPrefix(words.peek());
-                    if(tempNode.getCount() < node.getCount()){
+                    if( tempNode.getCount() < node.getCount()){
                         words.poll();
                         words.add(word);
                     }
